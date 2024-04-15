@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -19,14 +20,43 @@ class EjemploController extends AbstractController
     }
     
 
-    #[Route('/ejemplo',methods: ['GET'])]
+   /* #[Route('/ejemplo',methods: ['GET'])]
     public function metodo_get(): JsonResponse
     {
         return $this->json([
             'estado' => 'ok',
             'mensaje' => 'metodo GET',
         ]);
+    }*/
+    
+    #[Route('/ejemplo',methods: ['GET'])]
+    public function metodo_get(): Response
+    {
+        $response = new Response(json_encode( array(
+            'estado'=>'ok',
+            'mensaje'=>"mensaje desde GET"
+        
+        )));
+       $response->headers->set('Tamila', 'www.tamila.cl'); 
+        return $response;
+    
     }
+    /*#[Route('/ejemplo',methods: ['GET'])]
+    public function metodo_get(Request $request): JsonResponse
+    {
+        if($request->headers->get('x-token')){
+            return $this->json([
+                'estado' => 'ok',
+                'mensaje' => 'metodo GET',
+                'mi header' => $request->headers->get('x-token')
+            ]);
+        } else {
+            return $this->json([
+                'estado' => 'ok',
+                'mensaje' => 'metodo GET',
+            ]);
+        }
+    }*/
     
     #[Route('/ejemplo/{id}',methods: ['GET'])]
     public function metodo_get_con_parametro(int $id): JsonResponse
@@ -47,7 +77,7 @@ class EjemploController extends AbstractController
     }
     
     #[Route('/ejemplo',methods: ['POST'])]
-    public function metodo_post(request $request): JsonResponse
+    public function metodo_post(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         print_r($data);exit();
