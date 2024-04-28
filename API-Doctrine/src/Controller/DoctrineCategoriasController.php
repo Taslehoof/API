@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Categoria;
+use App\Entity\Producto;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
@@ -56,7 +57,7 @@ class DoctrineCategoriasController extends AbstractController{
          ], 201);
     }
     
-    #[Route('/api/v1/doctrine/categorias', methods:['PUT'])]
+    #[Route('/api/v1/doctrine/categorias/{id}', methods:['PUT'])]
     public function metodo_put(int $id, Request $request, SluggerInterface $slugger): JsonResponse{
         $datos=$this->em->getRepository(Categoria::class)->find($id);
         if(!$datos){
@@ -91,6 +92,22 @@ class DoctrineCategoriasController extends AbstractController{
                 'estado'=>'error',
                 'mensaje'=>'La URL no esta disponible en este momento'
             ], 404);
+        }
+
+        $producto = $this->em->getRepository(Producto::class)->findBy(array('categoria'=>$id),array());
+        if($producto){
+            return new JsonResponse([
+                'estado'=>'error',
+                'mensaje'=>'No se pudo completar la petición, ocurrió un error inesperado'
+            ],400);
+        } else {
+            $this->em->remove($datos);
+            $this->em->flush();
+            return $this->json([
+                'estado'=>'ok',
+                'mensaje'=>'Se eliminó el registro exitosamente'
+            ]);
+
         }
     }
 }
