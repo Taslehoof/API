@@ -16,6 +16,8 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            custom_authenticators:
+                -App\Security\CustomAuthenthicator
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -28,6 +30,7 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/api/v1/doctrine, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:
